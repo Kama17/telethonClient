@@ -22,8 +22,9 @@ custom_headers = {
 supabase: Client = create_client(
     SUPABASE_URL,
     SUPABASE_KEY,
-    options={"headers": custom_headers}
 )
+supabase._client.headers.update({"Accept": "application/json"})
+
 
 def supabase_save_session(user_id: str, session_str: str):
     supabase.table('sessions').upsert({'user_id': user_id, 'session': session_str}).execute()
