@@ -6,8 +6,10 @@ from telethon.tl.types import ChannelParticipantsSearch
 from supabase import create_client, Client
 import asyncio
 import os
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # <-- This enables CORS for all domains by default
 
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_SERVICE_KEY')
