@@ -24,7 +24,8 @@ def supabase_save_session(user_id: str, session_str: str):
     supabase.table('telegram_sessions').upsert({
         'user_id': user_id,
         'session_string': session_str
-    }).execute()
+    }, on_conflict='user_id').execute()
+
 
 def supabase_get_session(user_id: str):
     result = supabase.table('telegram_sessions').select('session_string').eq('user_id', user_id).single().execute()
