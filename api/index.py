@@ -27,12 +27,12 @@ supabase._client.headers.update({"Accept": "application/json"})
 
 
 def supabase_save_session(user_id: str, session_str: str):
-    supabase.table('sessions').upsert({'user_id': user_id, 'session': session_str}).execute()
+    supabase.table('sessions').upsert({'user_id': user_id, 'session_string': session_str}).execute()
 
 def supabase_get_session(user_id: str):
     response = supabase.table('telegram_sessions').select('session_string').eq('user_id', user_id).single().execute()
     if response.data:
-        return response.data['session']
+        return response.data['session_string']
     return None
 
 async def get_chats_and_members(client):
