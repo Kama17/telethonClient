@@ -13,7 +13,17 @@ CORS(app)  # <-- This enables CORS for all domains by default
 
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_SERVICE_KEY')
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+custom_headers = {
+    "apikey": SUPABASE_KEY,
+    "Authorization": f"Bearer {SUPABASE_KEY}",
+    "Accept": "application/json"  # <-- this is what fixes 406
+}
+
+supabase: Client = create_client(
+    SUPABASE_URL,
+    SUPABASE_KEY,
+    options={"headers": custom_headers}
+)
 
 def supabase_save_session(user_id: str, session_str: str):
     supabase.table('sessions').upsert({'user_id': user_id, 'session': session_str}).execute()
@@ -55,7 +65,7 @@ async def get_chats_and_members(client):
 def home():
     return 'Telethon API is running!'
 
-@app.route('/connect', methods=['POST'])
+@app.route('/api/connect', methods=['POST'])
 def telegram_connect():
     data = request.get_json()
     api_id = data.get('api_id')
