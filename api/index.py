@@ -126,3 +126,7 @@ def sign_in():
         return jsonify({"chats": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.errorhandler(500)
+def handle_internal_error(error):
+    return jsonify({"error": "Internal Server Error", "details": str(error)}), 500
