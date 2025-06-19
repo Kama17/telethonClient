@@ -65,7 +65,7 @@ async def get_chats_and_members(client):
 def home():
     return 'Telethon API is running!'
 
-@app.route('/api/connect', methods=['POST'])
+@app.route('/connect', methods=['POST'])
 def telegram_connect():
     data = request.get_json()
     api_id = data.get('api_id')
