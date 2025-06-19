@@ -13,16 +13,9 @@ CORS(app)  # <-- This enables CORS for all domains by default
 
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_SERVICE_KEY')
-custom_headers = {
-    "apikey": SUPABASE_KEY,
-    "Authorization": f"Bearer {SUPABASE_KEY}",
-    "Accept": "application/json"  # <-- this is what fixes 406
-}
 
 
-url: str = os.environ.get(SUPABASE_URL)
-key: str = os.environ.get(SUPABASE_KEY)
-supabase: Client = create_client(url, key)
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def supabase_save_session(user_id: str, session_str: str):
     supabase.table('sessions').upsert({'user_id': user_id, 'session_string': session_str}).execute()
@@ -85,9 +78,9 @@ def telegram_connect():
         await client.start()
         chats = await get_chats_and_members(client)
 
-        if not session_str:
-            new_session = client.session.save()
-            supabase_save_session(user_id, new_session)
+        # if not session_str:
+        #     new_session = client.session.save()
+        #     supabase_save_session(user_id, new_session)
 
         await client.disconnect()
         return chats
