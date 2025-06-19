@@ -19,12 +19,10 @@ custom_headers = {
     "Accept": "application/json"  # <-- this is what fixes 406
 }
 
-supabase: Client = create_client(
-    SUPABASE_URL,
-    SUPABASE_KEY,
-)
-supabase._client.headers.update({"Accept": "application/json"})
 
+url: str = os.environ.get(SUPABASE_URL)
+key: str = os.environ.get(SUPABASE_KEY)
+supabase: Client = create_client(url, key)
 
 def supabase_save_session(user_id: str, session_str: str):
     supabase.table('sessions').upsert({'user_id': user_id, 'session_string': session_str}).execute()
