@@ -75,7 +75,7 @@ def telegram_connect():
     if not all([api_id, api_hash, user_id]):
         return jsonify({'error': 'Missing api_id, api_hash, or user_id'}), 400
 
-    session_str = supabase_get_session(user_id)
+    session_str = None #supabase_get_session(user_id)
 
     async def main():
         if session_str:
