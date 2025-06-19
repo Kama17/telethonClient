@@ -43,18 +43,14 @@ async def get_chats_and_members(client):
             "type": d.entity.__class__.__name__,
         }
         try:
-            participants = await client(GetParticipantsRequest(
-                channel=d.entity,
-                filter=ChannelParticipantsSearch(''),
-                offset=0,
-                limit=10,
-                hash=0
-            ))
-            chat_info["members_preview"] = [{
-                "id": p.id,
-                "username": p.username,
-                "name": f"{p.first_name or ''} {p.last_name or ''}".strip()
-            } for p in participants.users]
+            members = []
+            async for user in client.iter_participants(d.entity, limit=10):
+                members.append({
+                "id": user.id,
+                "username": user.username,
+                "name": f"{user.first_name or ''} {user.last_name or ''}".strip()
+                })
+            chat_info["members_preview"] = members
         except Exception:
             chat_info["members_preview"] = []
 
