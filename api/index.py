@@ -11,6 +11,8 @@ import asyncio
 app = Flask(__name__)
 CORS(app)
 
+phone_code_hashes = {}
+
 # Supabase config from environment
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_SERVICE_KEY')
@@ -101,17 +103,18 @@ def sign_in():
     api_hash = data.get("api_hash")
     phone = data.get("phone")
     code = data.get("code")
+    phone_code_hash = data.get("phone_code_hash") 
     user_id = data.get("user_id")
 
     session_str = supabase_get_session(user_id)
 
-    if not all([api_id, api_hash, phone, code, session_str]):
+    if not all([api_id, api_hash, phone, code, phone_code_hash, session_str]):
         return jsonify({"error": "Missing required fields"}), 400
 
     async def main():
         client = TelegramClient(StringSession(session_str), int(api_id), api_hash)
         await client.connect()
-        await client.sign_in(phone=phone, code=code)
+        await client.sign_in(phone=phone,phone_code_hash=phone_code_hash)
         chats = await get_chats_and_members(client)
         new_session = client.session.save()
         supabase_save_session(user_id, new_session)
