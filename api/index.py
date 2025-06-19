@@ -114,8 +114,19 @@ def sign_in():
     async def main():
         client = TelegramClient(StringSession(session_str), int(api_id), api_hash)
         await client.connect()
-        await client.sign_in(phone=phone,phone_code_hash=phone_code_hash)
+
+        try:
+            await client.sign_in(phone=phone, phone_code_hash=phone_code_hash, code=code)
+        except Exception as e:
+            await client.disconnect()
+            raise e
+
+        if not await client.is_user_authorized():
+            await client.disconnect()
+            return {'error': 'User not authorized after sign-in.'}
+
         chats = await get_chats_and_members(client)
+
         new_session = client.session.save()
         supabase_save_session(user_id, new_session)
         await client.disconnect()
