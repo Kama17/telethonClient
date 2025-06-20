@@ -60,9 +60,9 @@ async def get_chats_and_members(client):
 
 # --- Routes ---
 
-# @app.route('/')
-# def home():
-#     return 'Telethon API is running!'
+@app.route('/')
+def home():
+    return 'Telethon API is running!'
 
 @app.route('/send-code', methods=['POST'])
 def send_code():
